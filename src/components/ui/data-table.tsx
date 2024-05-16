@@ -28,11 +28,12 @@ import {
   import { Button } from "./button";
   import { ScrollArea, ScrollBar } from "./scroll-area";
 import { useEffect, useState } from "react";
+import { ExportCSV } from '@/Excel/ExportToCSV';
 
   
   interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
-    data: TData[];
+  
     searchKey: string;
 
   }
@@ -42,7 +43,7 @@ import { useEffect, useState } from "react";
   
   export function DataTable<TData, TValue>({
     columns,
-    data,
+   
     searchKey,
     
   }: DataTableProps<TData, TValue>) {
@@ -51,7 +52,7 @@ import { useEffect, useState } from "react";
    
     /* this can be used to get the selectedrows 
     console.log("value", table.getFilteredSelectedRowModel()); */
-    const [books, setBooks] = useState([]);
+    const [books, setBooks] = useState<any[]>([]);
     const [pagination, setPagination] = useState<PaginationState>({
       pageIndex: 0,
       pageSize: 10,
@@ -61,41 +62,7 @@ import { useEffect, useState } from "react";
 
     
 
-  //   useEffect(() => {
-  //     const fetchData = async () => {
-  //         try {
-  //             const res = await axios.get('https://openlibrary.org/subjects/literature.json', {
-  //                 params: {
-  //                      // Change 'your_search_query' to your actual search query
-                       
-  //                     limit: pagination.pageSize,
-  //                     offset: ((pagination.pageIndex+1) - 1) * pagination.pageSize
-  //                 }
-  //             });
-
-  //             setBooks(res?.data?.works);
-
-  //             const authorsKeys= res?.data?.works?.map((item:any)=>item.authors[0].key)
-
-  //             console.log(authorsKeys[0])
-
-
-
-  //             const res2 = await axios.get(`https://openlibrary.org/${authorsKeys[0]}.json`, {
-               
-  //           });
-
-  //             console.log("this is authors",res2)
-
-             
-  //         } catch (error) {
-  //             console.error('Error fetching data:', error);
-  //         }
-  //     };
-
-  //     fetchData(); // Call fetchData when pagination changes
-  // }, [pagination]);
-   
+ 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -150,7 +117,7 @@ import { useEffect, useState } from "react";
       getFilteredRowModel: getFilteredRowModel(),
     });
 
-    console.log(data)
+  
     
      
      if (!books?.length) {
@@ -161,6 +128,7 @@ import { useEffect, useState } from "react";
   
     return (
       <>
+        <div className='flex justify-between p-2'>
         <Input
           placeholder={`Search ${searchKey}...`}
           value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
@@ -169,6 +137,11 @@ import { useEffect, useState } from "react";
           }
           className="w-full md:max-w-sm"
         />
+         <div className="bg-[#3A244A] p-2 text-white rounded">
+       
+       <ExportCSV  csvData={books} fileName="text-excel-doc" />
+       </div>
+        </div>
         <ScrollArea className="rounded-md border h-[calc(80vh-220px)]">
           <Table className="relative">
             <TableHeader>

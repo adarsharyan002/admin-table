@@ -1,6 +1,6 @@
 // import BreadCrumb from "@/components/BreadCrumb";
 import { UserClient } from "@/components/Client";
-import { books } from "@/utils/data";
+
 
 
 import {columns} from '@/components/columns'
@@ -10,9 +10,9 @@ export default function Table() {
  
   return (
     <>
-      <div className="flex-1 space-y-4  pt-2">
+      <div className="flex-1 space-y-4  p-2">
         
-        <UserClient  data={books} columns={columns} />
+        <UserClient   columns={columns}  />
       </div>
     </>
   );

@@ -35,25 +35,27 @@ import axios from 'axios';
       //onSubmit handler
       const onSubmit =async ()=>{
         const formData = getValues();
-       
-        try {
-            // Make an HTTP POST request using Axios
-            setIsLoading(true); 
 
-            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/login`,formData);
-            navigate('/')
+        console.log(formData)
+       
+        // try {
+        //     // Make an HTTP POST request using Axios
+        //     setIsLoading(true); 
+
+        //     const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/login`,formData);
+        //     navigate('/login')
         
-            console.log('Response:', response.data);
-            localStorage.setItem('token', response.data.token);
-            // Optionally, perform actions based on the response (e.g., show success message)
+        //     console.log('Response:', response.data);
+        //     localStorage.setItem('token', response.data.token);
+        //     // Optionally, perform actions based on the response (e.g., show success message)
         
-          } catch (error:any) {
-            if (axios.isAxiosError(error) && error.response) {
-                setError(error.response.data.error);
-              }
-          }finally {
-            setIsLoading(false); // Set loading state back to false after request completes
-          }
+        //   } catch (error:any) {
+        //     if (axios.isAxiosError(error) && error.response) {
+        //         setError(error.response.data.error);
+        //       }
+        //   }finally {
+        //     setIsLoading(false); // Set loading state back to false after request completes
+        //   }
         
        
        }

@@ -26,12 +26,7 @@ export const columns: ColumnDef<Book>[] = [
     enableSorting: false,
     enableHiding: false,
   },
-  {
-    accessorKey: "ratings_average",
-    header: "Ratings",
-   
-
-  },
+  
   {
     accessorKey: "author_name",
     header: "Author",
@@ -53,9 +48,12 @@ export const columns: ColumnDef<Book>[] = [
     cell: ({row}) => <p>{row?.original?.authorData.birth_date}</p>,
 
   },
+ 
   {
-    accessorKey: "author_top_work",
-    header: "Top Work",
+    accessorKey: "subject",
+    header: "Subject",
+    cell: ({row}) => <p>{row?.original?.subject[0]}</p>,
+
   },
   {
     id: "actions",

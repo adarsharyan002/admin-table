@@ -1,6 +1,9 @@
 
 import React from "react";
 import Table from "./components/Table";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import SignIn from "./components/auth/SignIn";
+
 
 
 const App: React.FC = () => {
@@ -9,12 +12,16 @@ const App: React.FC = () => {
 
   
 return (
-    <div>
-    <div className="container mt-4">
-     <Table/>
+    <>
+           <Router>
+          <Routes>
+          <Route path="/" element={<SignIn/>} />
+          <Route path="/table" element={<Table/>} />
+          </Routes>
+          </Router>
     
-    </div>
-    </div>
+    </>
+    
   );
 };
 
