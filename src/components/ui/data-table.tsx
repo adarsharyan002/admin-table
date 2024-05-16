@@ -8,6 +8,7 @@ import {
     useReactTable,
     getSortedRowModel,
     SortingState,
+    getFilteredRowModel,
   } from "@tanstack/react-table";
 
   import {
@@ -125,6 +126,7 @@ import { ExportCSV } from '@/Excel/ExportToCSV';
       onSortingChange: setSorting,
       getCoreRowModel: getCoreRowModel(),
       getSortedRowModel: getSortedRowModel(),
+      getFilteredRowModel:getFilteredRowModel()
     });
 
   
