@@ -4,8 +4,10 @@ import {
     PaginationState,
     flexRender,
     getCoreRowModel,
-    getFilteredRowModel,
+   
     useReactTable,
+    getSortedRowModel,
+    SortingState,
   } from "@tanstack/react-table";
 
   import {
@@ -50,13 +52,14 @@ import { ExportCSV } from '@/Excel/ExportToCSV';
     
     
    
-    /* this can be used to get the selectedrows 
-    console.log("value", table.getFilteredSelectedRowModel()); */
+   
     const [books, setBooks] = useState<any[]>([]);
     const [pagination, setPagination] = useState<PaginationState>({
       pageIndex: 0,
       pageSize: 10,
     })
+
+    const [sorting, setSorting] = useState<SortingState>([])
 
     const pageSizeOptions = [10, 20, 30, 40, 50,100];
 
@@ -64,43 +67,48 @@ import { ExportCSV } from '@/Excel/ExportToCSV';
 
  
 
-  useEffect(() => {
-    const fetchData = async () => {
-        try {
-            // Fetch books data
-            const booksResponse = await axios.get('https://openlibrary.org/subjects/literature.json', {
-                params: {
-                    limit: pagination.pageSize,
-                    offset: (pagination.pageIndex+1) * pagination.pageSize
-                }
-            });
-            const booksData = booksResponse.data.works || [];
-
-            // Fetch authors data for each book
-            const booksWithAuthorsData = await Promise.all(booksData.map(async (book:any) => {
-                const authorKey = book.authors[0]?.key;
-                if (authorKey) {
-                    try {
-                        const authorResponse = await axios.get(`https://openlibrary.org${authorKey}.json`);
-                        const authorData = authorResponse.data;
-                        return { ...book, authorData };
-                    } catch (error) {
-                        console.error(`Error fetching author data for book with key ${authorKey}:`, error);
-                        return { ...book, authorData: null };
-                    }
-                } else {
-                    return { ...book, authorData: null };
-                }
-            }));
-
-            setBooks(booksWithAuthorsData);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    };
-
-    fetchData(); // Call fetchData when pagination changes
-}, [pagination]);
+    useEffect(() => {
+      const fetchData = async () => {
+          try {
+              // Fetch books data
+              const booksResponse = await axios.get('https://openlibrary.org/subjects/literature.json', {
+                  params: {
+                      limit: pagination.pageSize,
+                      offset: pagination.pageIndex * pagination.pageSize
+                  }
+              });
+              const booksData = booksResponse.data.works || [];
+  
+              // Fetch authors data for each book and merge into booksData array
+              await Promise.all(booksData.map(async (book:any) => {
+                  const authorKey = book.authors[0]?.key;
+                  if (authorKey) {
+                      try {
+                          const authorResponse = await axios.get(`https://openlibrary.org${authorKey}.json`);
+                          const authorData = authorResponse.data;
+                          // Merge author fields into book object
+                          book.authorData = authorData;
+                          // Merge specific fields from authorData into book object
+                          book.author_name = authorData.name;
+                          // Add more fields as needed
+                      } catch (error) {
+                          console.error(`Error fetching author data for book with key ${authorKey}:`, error);
+                          book.authorData = null;
+                      }
+                  } else {
+                      book.authorData = null;
+                  }
+              }));
+  
+              setBooks(booksData);
+          } catch (error) {
+              console.error('Error fetching data:', error);
+          }
+      };
+  
+      fetchData(); // Call fetchData when pagination changes
+  }, [pagination]);
+  
 
 
   console.log("this is all bookd",books)
@@ -110,11 +118,13 @@ import { ExportCSV } from '@/Excel/ExportToCSV';
       columns,
       state:{
         pagination,
+        sorting
       },
       onPaginationChange: setPagination,
       manualPagination:true,
+      onSortingChange: setSorting,
       getCoreRowModel: getCoreRowModel(),
-      getFilteredRowModel: getFilteredRowModel(),
+      getSortedRowModel: getSortedRowModel(),
     });
 
   
@@ -152,10 +162,35 @@ import { ExportCSV } from '@/Excel/ExportToCSV';
                       <TableHead key={header.id}>
                         {header.isPlaceholder
                           ? null
-                          : flexRender(
+                          :(
+                            <div
+                            className={
+                              header.column.getCanSort()
+                                ? 'cursor-pointer select-none'
+                                : ''
+                            }
+                            onClick={header.column.getToggleSortingHandler()}
+                            title={
+                              header.column.getCanSort()
+                                ? header.column.getNextSortingOrder() === 'asc'
+                                  ? 'Sort ascending'
+                                  : header.column.getNextSortingOrder() === 'desc'
+                                    ? 'Sort descending'
+                                    : 'Clear sort'
+                                : undefined
+                            }
+                          >
+                            {flexRender(
                               header.column.columnDef.header,
-                              header.getContext(),
+                              header.getContext()
                             )}
+                            {{
+                              asc: ' 🔼',
+                              desc: ' 🔽',
+                            }[header.column.getIsSorted() as string] ?? null}
+                          </div>
+                          )
+                            }
                       </TableHead>
                     );
                   })}

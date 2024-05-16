@@ -23,15 +23,14 @@ export const columns: ColumnDef<Book>[] = [
         aria-label="Select row"
       />
     ),
-    enableSorting: false,
-    enableHiding: false,
+  
   },
   
   {
     accessorKey: "author_name",
     header: "Author",
-    cell: ({row}) => <p>{row?.original?.authorData.name}</p>,
-
+    
+    
   },
   {
     accessorKey: "title",
