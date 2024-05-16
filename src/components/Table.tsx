@@ -1,11 +1,23 @@
 // import BreadCrumb from "@/components/BreadCrumb";
 import { UserClient } from "@/components/Client";
+import {  useNavigate } from "react-router-dom";
 
 
 
 import {columns} from '@/components/columns'
+import { useEffect } from "react";
 // const breadcrumbItems = [{ title: "User", link: "/dashboard/user" }];
 export default function Table() {
+
+  const navigate = useNavigate();
+
+  useEffect(()=>{
+   const token = localStorage.getItem('token');
+    if(!token){
+      navigate('/')
+     
+    }
+  },[navigate])
 
  
   return (

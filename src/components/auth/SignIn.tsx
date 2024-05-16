@@ -4,15 +4,14 @@ import { Button } from "@/components/ui/button";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import {  useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-// import { UserSignInSchema, UserSignInSchemaType } from "@/lib/schema";
+import { UserSignInSchema, UserSignInSchemaType } from "@/lib/schema";
 import { useForm } from "react-hook-form";
-// import { zodResolver } from "@hookform/resolvers/zod";
-import axios from 'axios';
+import { zodResolver } from "@hookform/resolvers/zod";
+import {  signInWithEmailAndPassword   } from 'firebase/auth';
+import { auth } from '../../firebase';
 
- type inputs ={
-    email:string;
-    password:string;
- }
+
+
 
  const   SignIn = () => {
 
@@ -29,33 +28,30 @@ import axios from 'axios';
         handleSubmit,
         getValues,
         formState: { errors }
-      } = useForm<inputs>()
+      } = useForm<UserSignInSchemaType>({ resolver: zodResolver(UserSignInSchema) })
        
 
       //onSubmit handler
       const onSubmit =async ()=>{
         const formData = getValues();
-
-        console.log(formData)
+        setIsLoading(true)
        
-        // try {
-        //     // Make an HTTP POST request using Axios
-        //     setIsLoading(true); 
-
-        //     const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/login`,formData);
-        //     navigate('/login')
-        
-        //     console.log('Response:', response.data);
-        //     localStorage.setItem('token', response.data.token);
-        //     // Optionally, perform actions based on the response (e.g., show success message)
-        
-        //   } catch (error:any) {
-        //     if (axios.isAxiosError(error) && error.response) {
-        //         setError(error.response.data.error);
-        //       }
-        //   }finally {
-        //     setIsLoading(false); // Set loading state back to false after request completes
-        //   }
+        signInWithEmailAndPassword(auth, formData.email, formData.password)
+        .then((userCredential:any) => {
+            console.log(userCredential)
+            // Signed in
+            const user = userCredential._tokenResponse;
+            localStorage.setItem("token", user.idToken);
+            setIsLoading(false)
+            navigate('/table')
+           
+        })
+        .catch((error:Error) => {
+           console.log(error)
+           setError(error.message)
+           setIsLoading(false)
+        });
+       
         
        
        }
@@ -102,7 +98,7 @@ import axios from 'axios';
             <Button className="w-full bg-[#3A244A] rounded-xl p-5" type="submit" disabled={isLoading}>
               {isLoading ? 'Signing In...' : 'Sign In'}
             </Button>
-            <Link to="/"><Button className="w-full bg-transparent border-2 border-[#3A244A] rounded-xl p-5 text-black hover:bg-[#3A244A] hover:text-white " type="submit">
+            <Link to="/signUp"><Button className="w-full bg-transparent border-2 border-[#3A244A] rounded-xl p-5 text-black hover:bg-[#3A244A] hover:text-white " type="submit">
               Sign up
             </Button></Link>
           </form>
