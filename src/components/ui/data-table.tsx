@@ -73,7 +73,7 @@ import { ExportCSV } from '@/Excel/ExportToCSV';
     useEffect(() => {
       const fetchData = async () => {
         try {
-          setLoading(true); // Set loading to true before fetching data
+          setLoading(true); 
     
           const booksResponse = await axios.get('https://openlibrary.org/subjects/literature.json', {
             params: {
@@ -104,7 +104,7 @@ import { ExportCSV } from '@/Excel/ExportToCSV';
         } catch (error) {
           console.error('Error fetching data:', error);
         } finally {
-          setLoading(false); // Set loading to false after data fetching completes
+          setLoading(false);
         }
       };
     
@@ -116,7 +116,6 @@ import { ExportCSV } from '@/Excel/ExportToCSV';
   
 
 
-  console.log("this is all bookd",books)
 
     const table = useReactTable({
       data:books,

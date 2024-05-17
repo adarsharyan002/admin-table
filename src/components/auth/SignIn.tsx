@@ -38,7 +38,7 @@ import { auth } from '../../firebase';
        
         signInWithEmailAndPassword(auth, formData.email, formData.password)
         .then((userCredential:any) => {
-            console.log(userCredential)
+            
             // Signed in
             const user = userCredential._tokenResponse;
             localStorage.setItem("token", user.idToken);
