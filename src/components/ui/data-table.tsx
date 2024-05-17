@@ -1,4 +1,5 @@
 import axios from 'axios'
+import {  ThreeDots } from 'react-loader-spinner'
 import {
     ColumnDef,
     PaginationState,
@@ -61,6 +62,7 @@ import { ExportCSV } from '@/Excel/ExportToCSV';
     })
 
     const [sorting, setSorting] = useState<SortingState>([])
+    const [loading, setLoading] = useState(false); 
 
     const pageSizeOptions = [10, 20, 30, 40, 50,100];
 
@@ -70,45 +72,47 @@ import { ExportCSV } from '@/Excel/ExportToCSV';
 
     useEffect(() => {
       const fetchData = async () => {
-          try {
-              // Fetch books data
-              const booksResponse = await axios.get('https://openlibrary.org/subjects/literature.json', {
-                  params: {
-                      limit: pagination.pageSize,
-                      offset: pagination.pageIndex * pagination.pageSize
-                  }
-              });
-              const booksData = booksResponse.data.works || [];
-  
-              // Fetch authors data for each book and merge into booksData array
-              await Promise.all(booksData.map(async (book:any) => {
-                  const authorKey = book.authors[0]?.key;
-                  if (authorKey) {
-                      try {
-                          const authorResponse = await axios.get(`https://openlibrary.org${authorKey}.json`);
-                          const authorData = authorResponse.data;
-                          // Merge author fields into book object
-                          book.authorData = authorData;
-                          // Merge specific fields from authorData into book object
-                          book.author_name = authorData.name;
-                          // Add more fields as needed
-                      } catch (error) {
-                          console.error(`Error fetching author data for book with key ${authorKey}:`, error);
-                          book.authorData = null;
-                      }
-                  } else {
-                      book.authorData = null;
-                  }
-              }));
-  
-              setBooks(booksData);
-          } catch (error) {
-              console.error('Error fetching data:', error);
-          }
+        try {
+          setLoading(true); // Set loading to true before fetching data
+    
+          const booksResponse = await axios.get('https://openlibrary.org/subjects/literature.json', {
+            params: {
+              limit: pagination.pageSize,
+              offset: pagination.pageIndex * pagination.pageSize
+            }
+          });
+          const booksData = booksResponse.data.works || [];
+    
+          await Promise.all(booksData.map(async (book: any) => {
+            const authorKey = book.authors[0]?.key;
+            if (authorKey) {
+              try {
+                const authorResponse = await axios.get(`https://openlibrary.org${authorKey}.json`);
+                const authorData = authorResponse.data;
+                book.authorData = authorData;
+                book.author_name = authorData.name;
+              } catch (error) {
+                console.error(`Error fetching author data for book with key ${authorKey}:`, error);
+                book.authorData = null;
+              }
+            } else {
+              book.authorData = null;
+            }
+          }));
+    
+          setBooks(booksData);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        } finally {
+          setLoading(false); // Set loading to false after data fetching completes
+        }
       };
+    
+      fetchData();
+    }, [pagination]);
+    
   
-      fetchData(); // Call fetchData when pagination changes
-  }, [pagination]);
+    
   
 
 
@@ -133,7 +137,19 @@ import { ExportCSV } from '@/Excel/ExportToCSV';
     
      
      if (!books?.length) {
-      return <div>Loading...</div>; 
+      return <div className='flex justify-center items-center'>
+
+<ThreeDots
+  visible={true}
+  height="80"
+  width="80"
+  color="#3A244A"
+  radius="9"
+  ariaLabel="three-dots-loading"
+  wrapperStyle={{}}
+  wrapperClass=""
+  />
+      </div>; 
 
   
     }
@@ -200,6 +216,18 @@ import { ExportCSV } from '@/Excel/ExportToCSV';
               ))}
             </TableHeader>
             <TableBody>
+              {loading?<div  className='w-full flex justify-center items-center'>
+                <ThreeDots
+                visible={true}
+                height="80"
+                width="80"
+                color="#3A244A"
+                radius="9"
+                ariaLabel="three-dots-loading"
+                wrapperStyle={{}}
+                wrapperClass="center"
+                />
+              </div>:<>
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
@@ -226,6 +254,8 @@ import { ExportCSV } from '@/Excel/ExportToCSV';
                   </TableCell>
                 </TableRow>
               )}
+              </>}
+              
             </TableBody>
           </Table>
           <ScrollBar orientation="horizontal" />
