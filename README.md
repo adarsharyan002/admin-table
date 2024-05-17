@@ -1,30 +1,46 @@
-# React + TypeScript + Vite
+# Admin Dashboard for Book Records
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Table of Contents
+- [Introduction](#introduction)
+- [Features](#features)
+- [Installation](#installation)
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+## Introduction
+This project is an admin dashboard for managing and displaying book records fetched from the Open Library API. The dashboard provides features such as pagination, sorting and filter functionalities.It is built using ReactJS with the Shadcn component library for a modern and responsive user interface.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Features
+1. **Data Fetching**: Fetches book records from the Open Library API.
+2. **Columns**: Displays the following columns:
+   - `author name`
+   - `title`
+   - `first_publish_year`
+   - `subject`
+   - `author_birth_date`
+   
+3. **Pagination**: Supports pagination with options to display 10, 50, or 100 books per page.
+4. **Sorting**: Allows sorting in ascending/descending order for all columns.
+5. **Search**: Allows searching books by author.
+6. **CSV Download**: Enables downloading the current results in a CSV format.
+7. **Authentication**: Includes an authentication mechanism for logging into the dashboard.
+8. **Hosting**: The dashboard is hosted online for easy access.
 
-- Configure the top-level `parserOptions` property like this:
+## Installation
+To set up the project locally, follow these steps:
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+1. **Clone the repository:**
+   ```sh
+   git clone https://github.com/your-username/admin-table.git
+   cd admin-table
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+2. **Install Dependencies:**
+   ```sh
+   npm install
+3. **Set up environment variables:**
+   ```sh
+   VITE_PUBLIC_API_KEY="Firebase api key"
+4. **Run the server:**
+   ```sh
+   npm run dev
+
