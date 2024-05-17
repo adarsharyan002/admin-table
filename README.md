@@ -31,8 +31,8 @@ To set up the project locally, follow these steps:
 
 1. **Clone the repository:**
    ```sh
-   git clone https://github.com/your-username/admin-dashboard.git
-   cd admin-dashboard
+   git clone https://github.com/your-username/admin-table.git
+   cd admin-table
 
 2. **Install Dependencies:**
    ```sh
